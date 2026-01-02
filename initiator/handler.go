@@ -18,11 +18,11 @@ func InitHandler(ml ModuleLayer, log hlog.Logger,
 	return HandlerLayer{
 		company: company.New(
 			log.Named("company-handler"),
-			ml.company,
+			ml.Company,
 			timeout),
 		paymentIntent: paymentintent.New(
 			log.Named("payment-intent-handler"),
-			ml.paymentIntent,
+			ml.PaymentIntent,
 			timeout,
 		),
 	}

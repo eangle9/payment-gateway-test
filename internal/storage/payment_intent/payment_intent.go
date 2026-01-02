@@ -3,6 +3,7 @@ package paymentintent
 import (
 	"context"
 	"encoding/json"
+	"pg/initiator/platform/amqp"
 	"pg/internal/constant"
 	"pg/internal/constant/errors"
 	"pg/internal/constant/model/db"
@@ -10,8 +11,6 @@ import (
 	persistencedb "pg/internal/constant/persistenceDB"
 	"pg/internal/storage"
 	"pg/platform/hlog"
-	"pg/platform/sql"
-	"pg/platform/utils"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -31,26 +30,8 @@ func NewPaymentIntentPersistance(persistenceQueries persistencedb.PersistenceDB,
 }
 
 func (p *paymentIntentPersistance) CreatePaymentIntent(ctx context.Context,
-	param dto.CreatePaymentIntent) (*dto.PaymentIntent, error) {
-	extra, err := json.Marshal(param.Extra)
-	if err != nil {
-		err := errors.ErrInternalServerError.Wrap(err, "unable to marshal extra fields")
-		p.logger.Error(ctx, "error marshalling extra fields", zap.Error(err))
-		return nil, err
-	}
-	pi, err := p.persistenceQueries.CreatePaymentIntent(ctx, db.CreatePaymentIntentParams{
-		CompanyID:   param.CompanyID,
-		CustomerID:  param.CustomerID,
-		PaymentType: string(param.PaymentType),
-		Amount:      param.Amount,
-		Currency:    string(param.Currency),
-		CallbackUrl: param.CallBackURL,
-		ReturnUrl:   param.ReturnURL,
-		Description: sql.StringOrNull(param.Description),
-		Extra:       utils.MapJSONOrNull(extra),
-		Status:      string(param.Status),
-		BillRefNo:   sql.StringOrNull(param.BillRefNO),
-	})
+	param dto.CreatePaymentIntent, client amqp.Client) (*dto.PaymentIntent, error) {
+	pi, err := p.persistenceQueries.CreatePaymentIntentTx(ctx, param, client)
 	if err != nil {
 		err = errors.ErrUnableToCreate.Wrap(err, "unable to create payment intent")
 		p.logger.Error(ctx,
@@ -137,4 +118,20 @@ func (p *paymentIntentPersistance) GetPaymentIntentByID(ctx context.Context,
 		Customer:    customer,
 		Company:     company,
 	}, nil
+}
+
+func (p *paymentIntentPersistance) UpdatePaymentIntentStatus(ctx context.Context,
+	id uuid.UUID, status string) error {
+	_, err := p.persistenceQueries.UpdatePaymentIntentStatus(ctx, db.UpdatePaymentIntentStatusParams{
+		ID:     id,
+		Status: status,
+	})
+	if err != nil {
+		err = errors.ErrUnableToUpdate.Wrap(err, "unable to update payment intent status")
+		p.logger.Error(ctx, "unable to update payment intent status",
+			zap.Error(err), zap.String("payment-intent-id", id.String()))
+		return err
+	}
+
+	return nil
 }

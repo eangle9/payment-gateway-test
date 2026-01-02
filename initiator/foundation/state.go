@@ -16,6 +16,7 @@ import (
 type State struct {
 	HTTPConfig  httpclient.HTTPTransport
 	TokenConfig hcrypto.TokenKey
+	AMQPURL     string
 }
 
 func InitState(logger hlog.Logger) State {
@@ -53,5 +54,6 @@ func InitState(logger hlog.Logger) State {
 	return State{
 		HTTPConfig:  httpconfig,
 		TokenConfig: tokenConfig,
+		AMQPURL:     viper.GetString("RABBITMQ_URL"),
 	}
 }

@@ -85,6 +85,11 @@ func Initiate() {
 	module := InitModule(persistence, log, platformInstance)
 	log.Info(context.Background(), "module initialized")
 
+	// Start Worker
+	log.Info(context.Background(), "initializing worker")
+	go module.PaymentIntent.StartWorker(context.Background())
+	log.Info(context.Background(), "worker initialized")
+
 	// Initiate Handler
 	log.Info(context.Background(), "initializing handler")
 	handler := InitHandler(module, log, viper.GetDuration("SERVER_TIMEOUT"))

@@ -18,6 +18,8 @@ const (
 	Deleted  Status = "DELETED"
 	Yes      Status = "YES"
 	No       Status = "NO"
+	Success  Status = "SUCCESS"
+	Failed   Status = "FAILED"
 )
 const (
 	AuthorizationHeaderkey  = "Authorization"

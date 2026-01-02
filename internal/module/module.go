@@ -18,4 +18,5 @@ type PaymentIntent interface {
 		param dto.InitPaymentIntent, companyID string) (*dto.PaymentIntent, error)
 	GetPaymentIntentDetail(ctx context.Context,
 		id string) (*dto.PaymentIntentDetail, error)
+	StartWorker(ctx context.Context)
 }

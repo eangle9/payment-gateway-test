@@ -133,7 +133,7 @@ type CreatePaymentIntent struct {
 	CallBackURL string               `json:"callback_url,omitempty"`
 	ReturnURL   string               `json:"return_url,omitempty"`
 	Description string               `json:"description,omitempty"`
-	CustomerID  uuid.UUID            `json:"customer_id,omitempty"`
+	Customer    PaymentCustomer      `json:"customer,omitempty"`
 	Extra       map[string]any       `json:"extra,omitempty"`
 	BillRefNO   string               `json:"bill_ref_no,omitempty"`
 }

@@ -11,23 +11,24 @@ import (
 )
 
 type ModuleLayer struct {
-	company       module.Company
-	paymentIntent module.PaymentIntent
+	Company       module.Company
+	PaymentIntent module.PaymentIntent
 }
 
 func InitModule(pl PersistenceLayer, log hlog.Logger,
 	platform platform.Layer) ModuleLayer {
 	return ModuleLayer{
-		company: company.New(
+		Company: company.New(
 			pl.company,
 			log.Named("company-module"),
 			platform.Token),
-		paymentIntent: paymentintent.New(
+		PaymentIntent: paymentintent.New(
 			pl.paymentIntent,
 			log.Named("payment-intent-module"),
 			pl.company,
 			platform.HTTPClient,
 			viper.GetString("CHECKOUT_BASE_URL")+viper.GetString("ONETIME_CHECKOUT_PAGE"),
+			platform.AMQP,
 		),
 	}
 }

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"pg/initiator/platform/amqp"
 	"pg/internal/constant/model/dto"
 
 	"github.com/google/uuid"
@@ -36,7 +37,9 @@ type Company interface {
 
 type PaymentIntent interface {
 	CreatePaymentIntent(ctx context.Context,
-		param dto.CreatePaymentIntent) (*dto.PaymentIntent, error)
+		param dto.CreatePaymentIntent, client amqp.Client) (*dto.PaymentIntent, error)
 	GetPaymentIntentByID(ctx context.Context,
 		id uuid.UUID) (*dto.PaymentIntentDetail, error)
+	UpdatePaymentIntentStatus(ctx context.Context,
+		id uuid.UUID, status string) error
 }
