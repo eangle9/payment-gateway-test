@@ -9,12 +9,14 @@ import (
 )
 
 type PersistenceLayer struct {
+	db            persistencedb.PersistenceDB
 	company       storage.Company
 	paymentIntent storage.PaymentIntent
 }
 
 func InitPersistence(db persistencedb.PersistenceDB, log hlog.Logger) PersistenceLayer {
 	return PersistenceLayer{
+		db:            db,
 		company:       company.NewCompanycePersistance(db, log.Named("company-persistence")),
 		paymentIntent: paymentintent.NewPaymentIntentPersistance(db, log.Named("payment-intent-persistence")),
 	}

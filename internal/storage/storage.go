@@ -42,4 +42,6 @@ type PaymentIntent interface {
 		id uuid.UUID) (*dto.PaymentIntentDetail, error)
 	UpdatePaymentIntentStatus(ctx context.Context,
 		id uuid.UUID, status string) error
+	GetPaymentIntentByIDForUpdate(ctx context.Context,
+		id uuid.UUID) (*dto.PaymentIntent, error)
 }

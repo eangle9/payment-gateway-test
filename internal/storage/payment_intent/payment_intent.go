@@ -135,3 +135,41 @@ func (p *paymentIntentPersistance) UpdatePaymentIntentStatus(ctx context.Context
 
 	return nil
 }
+func (p *paymentIntentPersistance) GetPaymentIntentByIDForUpdate(ctx context.Context,
+	id uuid.UUID) (*dto.PaymentIntent, error) {
+	pi, err := p.persistenceQueries.GetPaymentIntentByIDForUpdate(ctx, id)
+	if err != nil {
+		err = errors.ErrUnableToGet.Wrap(err, "unable to get payment intent for update")
+		p.logger.Error(ctx, "unable to get payment intent for update",
+			zap.Error(err), zap.String("payment-intent-id", id.String()))
+		return nil, err
+	}
+
+	extraMap := make(map[string]any)
+	if pi.Extra.Bytes != nil {
+		if err := json.Unmarshal(pi.Extra.Bytes, &extraMap); err != nil {
+			err = errors.ErrBadRequest.Wrap(err, "unable to unmarshal extra fields")
+			p.logger.Error(ctx,
+				"error unmarshalling extra fields",
+				zap.Error(err), zap.String("extra", string(pi.Extra.Bytes)))
+			return nil, err
+		}
+	}
+
+	return &dto.PaymentIntent{
+		ID:          pi.ID,
+		CompanyID:   pi.CompanyID,
+		CustomerID:  pi.CustomerID,
+		PaymentType: constant.PaymentType(pi.PaymentType),
+		Amount:      pi.Amount,
+		Status:      constant.Status(pi.Status),
+		Currency:    constant.Currency(pi.Currency),
+		CallBackURL: pi.CallbackUrl,
+		ReturnURL:   pi.ReturnUrl,
+		Extra:       extraMap,
+		BillRefNO:   pi.BillRefNo.String,
+		ExpireAt:    pi.ExpireAt.Time,
+		CreatedAt:   pi.CreatedAt,
+		UpdatedAt:   pi.UpdatedAt,
+	}, nil
+}

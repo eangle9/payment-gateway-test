@@ -6,7 +6,9 @@ import (
 	"pg/initiator/platform/amqp"
 	"pg/internal/constant"
 	"pg/internal/constant/errors"
+	"pg/internal/constant/model/db"
 	"pg/internal/constant/model/dto"
+	persistencedb "pg/internal/constant/persistenceDB"
 	"pg/internal/module"
 	"pg/internal/storage"
 	"pg/platform/hlog"
@@ -26,19 +28,22 @@ type paymentIntent struct {
 	companyStorage       storage.Company
 	httpClient           httpclient.HTTPClient
 	amqpClient           amqp.Client
+	persistenceDB        persistencedb.PersistenceDB
 }
 
 func New(paymentIntentStorage storage.PaymentIntent,
 	log hlog.Logger,
 	companyStorage storage.Company,
 	httpClient httpclient.HTTPClient,
-	amqpClient amqp.Client) module.PaymentIntent {
+	amqpClient amqp.Client,
+	persistenceDB persistencedb.PersistenceDB) module.PaymentIntent {
 	return &paymentIntent{
 		log:                  log,
 		paymentIntentStorage: paymentIntentStorage,
 		companyStorage:       companyStorage,
 		httpClient:           httpClient,
 		amqpClient:           amqpClient,
+		persistenceDB:        persistenceDB,
 	}
 }
 
@@ -118,8 +123,7 @@ func (p *paymentIntent) StartWorker(ctx context.Context) {
 	if err != nil {
 		p.log.Fatal(ctx, "failed to open channel", zap.Error(err))
 	}
-	// defer ch.Close() // In a long running worker, we might not want to close immediately, but here it's fine as we block.
-	// Actually StartWorker blocks, so we should close when it returns (which is never/on panic).
+	defer ch.Close()
 
 	// Declare the queue
 	_, err = ch.QueueDeclare(
@@ -180,34 +184,44 @@ func (p *paymentIntent) processPayment(ctx context.Context, d amqp091.Delivery) 
 		return
 	}
 
-	paymentIntent, err := p.paymentIntentStorage.GetPaymentIntentByID(ctx, pID)
+	err = p.persistenceDB.WithTransaction(ctx, func(tx persistencedb.PersistenceDB) error {
+		// 1. Lock the row and get current status
+		pi, err := tx.GetPaymentIntentByIDForUpdate(ctx, pID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Check status (Idempotency)
+		if constant.Status(pi.Status) != constant.Pending {
+			p.log.Info(ctx, "payment already processed or in progress",
+				zap.String("id", paymentIntentID), zap.String("status", string(pi.Status)))
+			return nil
+		}
+
+		// 3. Simulate processing
+		p.log.Info(ctx, "processing payment", zap.String("id", paymentIntentID))
+		time.Sleep(2 * time.Second)
+
+		// 4. Randomly succeed or fail
+		status := constant.Success
+		if time.Now().Unix()%2 == 0 {
+			status = constant.Failed
+		}
+
+		// 5. Update status
+		_, err = tx.UpdatePaymentIntentStatus(ctx, db.UpdatePaymentIntentStatusParams{
+			ID:     pID,
+			Status: string(status),
+		})
+		if err != nil {
+			return err
+		}
+
+		p.log.Info(ctx, "payment processed", zap.String("id", paymentIntentID), zap.String("status", string(status)))
+		return nil
+	})
+
 	if err != nil {
-		return
+		p.log.Error(ctx, "failed to process payment", zap.Error(err), zap.String("id", paymentIntentID))
 	}
-
-	if paymentIntent.Status != constant.Pending {
-		err := errors.ErrBadRequest.New("your request is being processed")
-		p.log.Error(ctx, "payment is already being processed",
-			zap.String("intent-id", paymentIntentID), zap.Error(err))
-		return
-	}
-
-	// Simulate processing
-	p.log.Info(ctx, "processing payment", zap.String("id", paymentIntentID))
-	time.Sleep(2 * time.Second)
-
-	// Randomly succeed or fail
-	status := constant.Success
-	if time.Now().Unix()%2 == 0 {
-		status = constant.Failed
-	}
-
-	// Update payment status
-	err = p.paymentIntentStorage.UpdatePaymentIntentStatus(ctx, pID, string(status))
-	if err != nil {
-		p.log.Error(ctx, "failed to update payment status", zap.Error(err))
-		return
-	}
-
-	p.log.Info(ctx, "payment processed", zap.String("id", paymentIntentID), zap.String("status", string(status)))
 }

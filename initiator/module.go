@@ -26,6 +26,7 @@ func InitModule(pl PersistenceLayer, log hlog.Logger,
 			pl.company,
 			platform.HTTPClient,
 			platform.AMQP,
+			pl.db,
 		),
 	}
 }

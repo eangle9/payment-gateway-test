@@ -12,6 +12,34 @@ import (
 	"github.com/google/uuid"
 )
 
+const getPaymentIntentByIDForUpdate = `-- name: GetPaymentIntentByIDForUpdate :one
+SELECT id, company_id, customer_id, payment_type, amount, currency, callback_url, return_url, description, extra, status, bill_ref_no, expire_at, created_at, updated_at, deleted_at FROM payment_intents WHERE id = $1 FOR UPDATE
+`
+
+func (q *Queries) GetPaymentIntentByIDForUpdate(ctx context.Context, id uuid.UUID) (PaymentIntent, error) {
+	row := q.db.QueryRow(ctx, getPaymentIntentByIDForUpdate, id)
+	var i PaymentIntent
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.CustomerID,
+		&i.PaymentType,
+		&i.Amount,
+		&i.Currency,
+		&i.CallbackUrl,
+		&i.ReturnUrl,
+		&i.Description,
+		&i.Extra,
+		&i.Status,
+		&i.BillRefNo,
+		&i.ExpireAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const updatePaymentIntentStatus = `-- name: UpdatePaymentIntentStatus :one
 UPDATE payment_intents
 SET status = $2, updated_at = NOW()
