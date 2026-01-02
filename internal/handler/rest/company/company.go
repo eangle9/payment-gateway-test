@@ -48,17 +48,20 @@ func New(log hlog.Logger, companyModule module.Company,
 func (cr *company) RegisterCompany(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(c.Request().Context(), cr.contextTimeout)
 	defer cancel()
+
 	param := dto.CreateCompany{}
 	err := c.Bind(&param)
 	if err != nil {
 		er := errors.ErrBadRequest.Wrap(err, "unable to bind company data")
 		cr.log.Error(ctx, "unable to bind company data", zap.Error(err))
-		return c.JSON(http.StatusBadRequest, er)
+		return er
 	}
+
 	data, err := cr.companyModule.RegisterCompany(ctx, param)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return err
 	}
+
 	return response.SendSuccessResponse(c, http.StatusCreated, data, nil)
 }
 
@@ -78,17 +81,20 @@ func (cr *company) RegisterCompany(c echo.Context) error {
 func (cr *company) Login(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(c.Request().Context(), cr.contextTimeout)
 	defer cancel()
+
 	param := dto.LoginRequest{}
 	err := c.Bind(&param)
 	if err != nil {
 		er := errors.ErrBadRequest.Wrap(err, "Unable to bind login data")
 		cr.log.Error(ctx, "Unable to bind login data", zap.Error(err))
-		return c.JSON(http.StatusBadRequest, er)
+		return er
 	}
+
 	data, err := cr.companyModule.Login(ctx, param)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return err
 	}
+
 	return response.SendSuccessResponse(c, http.StatusOK, data, nil)
 }
 
@@ -108,15 +114,18 @@ func (cr *company) Login(c echo.Context) error {
 func (cr *company) GenerateSecretToken(c echo.Context) error {
 	ctx, cancel := context.WithTimeout(c.Request().Context(), cr.contextTimeout)
 	defer cancel()
+
 	id, ok := ctx.Value("x-id").(string)
 	if !ok {
 		err := errors.ErrInvalidUserInput.New(
 			"invalid user id, it could be type of string")
-		return c.JSON(http.StatusBadRequest, err)
+		return err
 	}
+
 	data, err := cr.companyModule.GenerateToken(ctx, id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return err
 	}
+
 	return response.SendSuccessResponse(c, http.StatusOK, data, nil)
 }

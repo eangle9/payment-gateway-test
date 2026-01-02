@@ -53,7 +53,7 @@ func (p *paymentIntent) InitPaymentIntent(c echo.Context) error {
 	if !ok {
 		err := errors.ErrInvalidUserInput.New("invalid company id, it could be type of string")
 		p.log.Error(ctx, "invalid company id", zap.Error(err))
-		return c.JSON(http.StatusBadRequest, err)
+		return err
 	}
 
 	param := dto.InitPaymentIntent{}
@@ -61,12 +61,12 @@ func (p *paymentIntent) InitPaymentIntent(c echo.Context) error {
 	if err != nil {
 		er := errors.ErrBadRequest.Wrap(err, "unable to bind payment intent data")
 		p.log.Error(ctx, "unable to bind payment intent data", zap.Error(err))
-		return c.JSON(http.StatusBadRequest, er)
+		return er
 	}
 
 	data, err := p.PaymentIntentModule.InitPaymentIntent(ctx, param, id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return err
 	}
 
 	return response.SendSuccessResponse(c, http.StatusCreated, data, nil)
@@ -92,8 +92,8 @@ func (p *paymentIntent) GetPaymentIntentDetail(c echo.Context) error {
 
 	data, err := p.PaymentIntentModule.GetPaymentIntentDetail(ctx, c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return err
 	}
-	
+
 	return response.SendSuccessResponse(c, http.StatusOK, data, nil)
 }

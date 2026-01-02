@@ -10,9 +10,9 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "vertex Support Email",
+            "name": "letspay Support Email",
             "url": "sample@gmail.com",
-            "email": "info@vertex.com"
+            "email": "info@letspay.com"
         },
         "version": "{{.Version}}"
     },
@@ -376,7 +376,9 @@ const docTemplate = `{
                 "PENDING",
                 "DELETED",
                 "YES",
-                "NO"
+                "NO",
+                "SUCCESS",
+                "FAILED"
             ],
             "x-enum-varnames": [
                 "Active",
@@ -384,7 +386,9 @@ const docTemplate = `{
                 "Pending",
                 "Deleted",
                 "Yes",
-                "No"
+                "No",
+                "Success",
+                "Failed"
             ]
         },
         "doc.ErrorResponse": {
@@ -833,8 +837,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "activity API",
-	Description:      "This is the activity api.",
+	Title:            "letspay API",
+	Description:      "This is the letspay api.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

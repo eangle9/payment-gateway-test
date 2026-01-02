@@ -27,7 +27,6 @@ func InitModule(pl PersistenceLayer, log hlog.Logger,
 			log.Named("payment-intent-module"),
 			pl.company,
 			platform.HTTPClient,
-			viper.GetString("CHECKOUT_BASE_URL")+viper.GetString("ONETIME_CHECKOUT_PAGE"),
 			platform.AMQP,
 		),
 	}

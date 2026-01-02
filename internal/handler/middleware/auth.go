@@ -46,7 +46,7 @@ func (a *authMiddleware) AuthenticateAdminUser() echo.MiddlewareFunc {
 			if err != nil {
 				err = errors.ErrInvalidAccessToken.Wrap(err, "invalid token")
 				a.logger.Error(ctx, "invalid token", zap.Error(err))
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			companyID, err := uuid.Parse(payload.UserID)
 			if err != nil {
@@ -57,22 +57,22 @@ func (a *authMiddleware) AuthenticateAdminUser() echo.MiddlewareFunc {
 			company, err := a.companyStorage.GetCompanyByID(ctx, companyID)
 			if err != nil {
 				err = errors.ErrInvalidAccessToken.New("access denied")
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			if company.Status != string(constant.Active) {
 				err = errors.ErrAuthError.New("access denied company status is %s", company.Status)
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			companyToken, err := a.companyStorage.GetActiveCompanyTokenByID(ctx, companyID)
 			if err != nil {
 				err = errors.ErrInvalidAccessToken.New("unable to get active company token")
 				a.logger.Error(ctx, "unable to get active company token")
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			if payload.TokenID != companyToken.TokenID {
 				err = errors.ErrInvalidAccessToken.New("invalid token")
 				a.logger.Error(ctx, "invalid token", zap.Error(err))
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 
 			req := c.Request()
@@ -93,7 +93,7 @@ func (a *authMiddleware) AuthenticateUser() echo.MiddlewareFunc {
 			if err != nil {
 				err = errors.ErrInvalidAccessToken.Wrap(err, "invalid token")
 				a.logger.Error(ctx, "invalid token", zap.Error(err))
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			userID, err := uuid.Parse(payload.UserID)
 			if err != nil {
@@ -103,11 +103,11 @@ func (a *authMiddleware) AuthenticateUser() echo.MiddlewareFunc {
 			}
 			user, err := a.companyStorage.GetUserByID(ctx, userID)
 			if err != nil {
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 			if user.Status != string(constant.Active) {
 				err = errors.ErrAuthError.New("access denied")
-				return c.JSON(http.StatusUnauthorized, err)
+				return err
 			}
 
 			req := c.Request()

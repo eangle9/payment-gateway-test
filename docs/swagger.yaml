@@ -19,6 +19,8 @@ definitions:
     - DELETED
     - "YES"
     - "NO"
+    - SUCCESS
+    - FAILED
     type: string
     x-enum-varnames:
     - Active
@@ -27,6 +29,8 @@ definitions:
     - Deleted
     - "Yes"
     - "No"
+    - Success
+    - Failed
   doc.ErrorResponse:
     properties:
       error:
@@ -328,11 +332,11 @@ definitions:
     type: object
 info:
   contact:
-    email: info@vertex.com
-    name: vertex Support Email
+    email: info@letspay.com
+    name: letspay Support Email
     url: sample@gmail.com
-  description: This is the activity api.
-  title: activity API
+  description: This is the letspay api.
+  title: letspay API
   version: "1.0"
 paths:
   /generate-secret-token:

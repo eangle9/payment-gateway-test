@@ -22,13 +22,13 @@ import (
 
 // Initiate
 //
-//	@title						activity API
+//	@title						letspay API
 //	@version					1.0
-//	@description				This is the activity api.
+//	@description				This is the letspay api.
 //
-//	@contact.name				vertex Support Email
+//	@contact.name				letspay Support Email
 //	@contact.url				sample@gmail.com
-//	@contact.email				info@vertex.com
+//	@contact.email				info@letspay.com
 //	@securityDefinitions.apikey	BearerAuth
 //	@in							header
 //	@name						Authorization

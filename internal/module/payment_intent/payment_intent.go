@@ -25,7 +25,6 @@ type paymentIntent struct {
 	paymentIntentStorage storage.PaymentIntent
 	companyStorage       storage.Company
 	httpClient           httpclient.HTTPClient
-	topayURL             string
 	amqpClient           amqp.Client
 }
 
@@ -40,7 +39,6 @@ func New(paymentIntentStorage storage.PaymentIntent,
 		paymentIntentStorage: paymentIntentStorage,
 		companyStorage:       companyStorage,
 		httpClient:           httpClient,
-		topayURL:             topayURL,
 		amqpClient:           amqpClient,
 	}
 }
@@ -205,7 +203,7 @@ func (p *paymentIntent) processPayment(ctx context.Context, d amqp091.Delivery) 
 		status = constant.Failed
 	}
 
-	// Update DB
+	// Update payment status
 	err = p.paymentIntentStorage.UpdatePaymentIntentStatus(ctx, pID, string(status))
 	if err != nil {
 		p.log.Error(ctx, "failed to update payment status", zap.Error(err))

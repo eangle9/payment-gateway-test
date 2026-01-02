@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is the activity api.",
-        "title": "activity API",
+        "description": "This is the letspay api.",
+        "title": "letspay API",
         "contact": {
-            "name": "vertex Support Email",
+            "name": "letspay Support Email",
             "url": "sample@gmail.com",
-            "email": "info@vertex.com"
+            "email": "info@letspay.com"
         },
         "version": "1.0"
     },
@@ -368,7 +368,9 @@
                 "PENDING",
                 "DELETED",
                 "YES",
-                "NO"
+                "NO",
+                "SUCCESS",
+                "FAILED"
             ],
             "x-enum-varnames": [
                 "Active",
@@ -376,7 +378,9 @@
                 "Pending",
                 "Deleted",
                 "Yes",
-                "No"
+                "No",
+                "Success",
+                "Failed"
             ]
         },
         "doc.ErrorResponse": {
