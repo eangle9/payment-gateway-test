@@ -6,8 +6,6 @@ import (
 	"pg/internal/module/company"
 	paymentintent "pg/internal/module/payment_intent"
 	"pg/platform/hlog"
-
-	"github.com/spf13/viper"
 )
 
 type ModuleLayer struct {

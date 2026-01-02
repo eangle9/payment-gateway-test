@@ -32,7 +32,6 @@ func New(paymentIntentStorage storage.PaymentIntent,
 	log hlog.Logger,
 	companyStorage storage.Company,
 	httpClient httpclient.HTTPClient,
-	topayURL string,
 	amqpClient amqp.Client) module.PaymentIntent {
 	return &paymentIntent{
 		log:                  log,
