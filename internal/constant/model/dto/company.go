@@ -1,8 +1,11 @@
 package dto
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/dongri/phonenumber"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 )
 
@@ -69,6 +72,40 @@ type CompanyCredentialResponse struct {
 type LoginRequest struct {
 	PhoneOrEmail string `json:"phone" example:"+251933456789"`
 	Password     string `json:"password" example:"StrongPass@123"`
+}
+
+func (l *LoginRequest) Validate() error {
+	return validation.ValidateStruct(l,
+		validation.Field(&l.PhoneOrEmail, validation.Required.Error("phone or email is required"),
+			validation.When(IsPhoneNumber(l.PhoneOrEmail), validation.By(func(value interface{}) error {
+				normalized, err := ParsePhoneNumber(value.(string))
+				if err != nil {
+					return fmt.Errorf("invalid phone number: %v", err)
+				}
+				l.PhoneOrEmail = *normalized
+				return nil
+			}))),
+		validation.Field(&l.Password, validation.Required.Error("password is required")),
+	)
+}
+
+func IsPhoneNumber(value interface{}) bool {
+	v, ok := value.(string)
+	if !ok {
+		return false
+	}
+	if _, err := ParsePhoneNumber(v); err != nil {
+		return false
+	}
+	return true
+}
+
+func ParsePhoneNumber(phone string) (*string, error) {
+	str := phonenumber.Parse(phone, "ET")
+	if str == "" {
+		return nil, fmt.Errorf("invalid phone number")
+	}
+	return &str, nil
 }
 
 type SignInResponse struct {

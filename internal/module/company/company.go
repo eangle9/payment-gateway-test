@@ -77,6 +77,11 @@ func (c *company) RegisterCompany(ctx context.Context,
 }
 
 func (c *company) Login(ctx context.Context, arg dto.LoginRequest) (*dto.SignInResponse, error) {
+	if err := arg.Validate(); err != nil {
+		err = errors.ErrInvalidUserInput.Wrap(err, "invalid input")
+		c.log.Error(ctx, "invalid input", zap.Error(err))
+		return nil, err
+	}
 	user, err := c.companyStorage.GetUserByPhoneOrEmail(ctx, arg.PhoneOrEmail)
 	if err != nil {
 		return nil, err
