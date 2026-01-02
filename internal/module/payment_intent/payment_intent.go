@@ -41,6 +41,12 @@ func New(paymentIntentStorage storage.PaymentIntent,
 
 func (p *paymentIntent) InitPaymentIntent(ctx context.Context,
 	param dto.InitPaymentIntent, companyID string) (*dto.PaymentIntent, error) {
+	if err := param.Validate(); err != nil {
+		err = errors.ErrInvalidUserInput.Wrap(err, "invalid input")
+		p.log.Warn(ctx, "invalid input", zap.Error(err))
+		return nil, err
+	}
+
 	cID, err := uuid.Parse(companyID)
 	if err != nil {
 		err = errors.ErrInvalidUserInput.Wrap(err, "unable to parse company id")
@@ -74,6 +80,7 @@ func (p *paymentIntent) InitPaymentIntent(ctx context.Context,
 		p.log.Error(ctx, "unable to generate hash", zap.Error(err))
 		return nil, err
 	}
+
 	paymentIntent, err := p.paymentIntentStorage.CreatePaymentIntent(ctx, dto.CreatePaymentIntent{
 		CompanyID:   company.ID,
 		PaymentType: constant.PaymentTypeOnetime,
