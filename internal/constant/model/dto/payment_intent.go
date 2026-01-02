@@ -66,7 +66,8 @@ func (c InitPaymentIntent) Validate() error {
 		validation.Field(&c.Amount, validation.Required.Error("Amount is required"),
 			validation.By(ValidateDecimalMin(decimal.NewFromInt(1),
 				fmt.Sprintf("value must be greater than or equal to %v", 1)))),
-		validation.Field(&c.Currency, validation.Required.Error("Currency id is required")),
+		validation.Field(&c.Currency, validation.Required.Error("Currency id is required"),
+			validation.In(string(constant.CurrencyETB), string(constant.CurrencyUSD)).Error("Currency must be ETB or USD")),
 		validation.Field(&c.Customer, validation.By(func(value interface{}) error {
 			customer, ok := value.(PaymentCustomer)
 			if !ok {
