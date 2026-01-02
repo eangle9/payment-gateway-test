@@ -1,0 +1,21 @@
+package initiator
+
+import (
+	persistencedb "pg/internal/constant/persistenceDB"
+	"pg/internal/storage"
+	"pg/internal/storage/company"
+	paymentintent "pg/internal/storage/payment_intent"
+	"pg/platform/hlog"
+)
+
+type PersistenceLayer struct {
+	company       storage.Company
+	paymentIntent storage.PaymentIntent
+}
+
+func InitPersistence(db persistencedb.PersistenceDB, log hlog.Logger) PersistenceLayer {
+	return PersistenceLayer{
+		company:       company.NewCompanycePersistance(db, log.Named("company-persistence")),
+		paymentIntent: paymentintent.NewPaymentIntentPersistance(db, log.Named("payment-intent-persistence")),
+	}
+}
