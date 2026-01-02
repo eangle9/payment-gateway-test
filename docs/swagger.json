@@ -1,0 +1,820 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the activity api.",
+        "title": "activity API",
+        "contact": {
+            "name": "vertex Support Email",
+            "url": "sample@gmail.com",
+            "email": "info@vertex.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/generate-secret-token": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a company secret token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get secret token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/doc.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.CompanyCredentialResponse"
+                                        },
+                                        "meta_data": {}
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "This endpoint allows a company to log in to the application.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Authenticate a company",
+                "parameters": [
+                    {
+                        "description": "Login credentials of the company",
+                        "name": "company_login_request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/doc.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SignInResponse"
+                                        },
+                                        "meta_data": {}
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment-intents": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Initiate onetme paymentIntent",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "InitPaymentIntent",
+                "parameters": [
+                    {
+                        "description": "payment-intent details",
+                        "name": "create_payment_intent_request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.InitPaymentIntent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/doc.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.PaymentIntent"
+                                        },
+                                        "meta_data": {}
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment-intents/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get payment details by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Get PaymentIntent By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "payment intent id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/doc.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.PaymentIntentDetail"
+                                        },
+                                        "meta_data": {}
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup-company-owner": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint registers a new company in the Activity Rewards application.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Create a new company",
+                "parameters": [
+                    {
+                        "description": "Company details for registration",
+                        "name": "create_company_request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCompany"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/doc.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.Company"
+                                        },
+                                        "meta_data": {}
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/doc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "constant.Currency": {
+            "type": "string",
+            "enum": [
+                "ETB",
+                "EUR",
+                "USD",
+                "GBP"
+            ],
+            "x-enum-varnames": [
+                "CurrencyETB",
+                "CurrencyEUR",
+                "CurrencyUSD",
+                "CurrencyGBP"
+            ]
+        },
+        "constant.Status": {
+            "type": "string",
+            "enum": [
+                "ACTIVE",
+                "INACTIVE",
+                "PENDING",
+                "DELETED",
+                "YES",
+                "NO"
+            ],
+            "x-enum-varnames": [
+                "Active",
+                "Inactive",
+                "Pending",
+                "Deleted",
+                "Yes",
+                "No"
+            ]
+        },
+        "doc.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error contains the error detail if the request was not successful.",
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "integer"
+                        },
+                        "description": {
+                            "description": "Description is the error description.",
+                            "type": "string"
+                        },
+                        "field_error": {
+                            "description": "FieldError is the error detail for each field, if available that is.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/doc.FieldError"
+                            }
+                        },
+                        "message": {
+                            "description": "Message is the error message.",
+                            "type": "string"
+                        },
+                        "stack_trace": {
+                            "description": "StackTrace is the stack trace of the error.\nIt is only returned for debugging",
+                            "type": "string"
+                        }
+                    }
+                },
+                "success": {
+                    "description": "Success is only true if the request was successful.",
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "doc.FieldError": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "Description is the error description for this field.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the name of the field that caused the error.",
+                    "type": "string"
+                }
+            }
+        },
+        "doc.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "Total number of items",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "Data contains the actual data of the response."
+                },
+                "next": {
+                    "description": "URL for the next page, null if no next page",
+                    "type": "integer"
+                },
+                "previous": {
+                    "description": "URL for the previous page, null if no previous page",
+                    "type": "integer"
+                },
+                "success": {
+                    "description": "Success is only true if the request was successful.",
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "dto.Company": {
+            "type": "object",
+            "properties": {
+                "address_city": {
+                    "type": "string"
+                },
+                "address_country": {
+                    "type": "string"
+                },
+                "address_postal_code": {
+                    "type": "string"
+                },
+                "address_state": {
+                    "type": "string"
+                },
+                "address_street": {
+                    "type": "string"
+                },
+                "callback_url": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "primary_phone": {
+                    "type": "string"
+                },
+                "registration_number": {
+                    "type": "string"
+                },
+                "return_url": {
+                    "type": "string"
+                },
+                "secondary_phone": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CompanyCredentialResponse": {
+            "type": "object",
+            "properties": {
+                "scret_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateCompany": {
+            "type": "object",
+            "properties": {
+                "address_city": {
+                    "type": "string",
+                    "example": "Addis Ababa"
+                },
+                "address_country": {
+                    "type": "string",
+                    "example": "Ethiopia"
+                },
+                "address_postal_code": {
+                    "type": "string",
+                    "example": "1000"
+                },
+                "address_state": {
+                    "type": "string",
+                    "example": "Addis Ababa"
+                },
+                "address_street": {
+                    "type": "string",
+                    "example": "Bole Road"
+                },
+                "admin_email": {
+                    "type": "string",
+                    "example": "admin@acmetech.com"
+                },
+                "admin_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "admin_phone": {
+                    "type": "string",
+                    "example": "+251933456789"
+                },
+                "callback_url": {
+                    "type": "string",
+                    "example": "https://www.acmetech.com/payment/callback"
+                },
+                "confirm_password": {
+                    "type": "string",
+                    "example": "StrongPass@123"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "info@acmetech.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Acme Technologies Ltd"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "StrongPass@123"
+                },
+                "primary_phone": {
+                    "type": "string",
+                    "example": "+251911234567"
+                },
+                "registration_number": {
+                    "type": "string",
+                    "example": "REG-123456"
+                },
+                "return_url": {
+                    "type": "string",
+                    "example": "https://www.acmetech.com/payment/return"
+                },
+                "secondary_phone": {
+                    "type": "string",
+                    "example": "+251922345678"
+                },
+                "website": {
+                    "type": "string",
+                    "example": "https://www.acmetech.com"
+                }
+            }
+        },
+        "dto.Customer": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440002"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2023-09-11T14:30:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@gmail.com"
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2023-09-11T14:45:00Z"
+                }
+            }
+        },
+        "dto.InitPaymentIntent": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "callback_url": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "customer": {
+                    "$ref": "#/definitions/dto.PaymentCustomer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "return_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "StrongPass@123"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+251933456789"
+                }
+            }
+        },
+        "dto.PaymentCustomer": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PaymentIntent": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "bill_ref_no": {
+                    "type": "string"
+                },
+                "callback_url": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "currency": {
+                    "$ref": "#/definitions/constant.Currency"
+                },
+                "customer_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "expire_at": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "id": {
+                    "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "return_url": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/constant.Status"
+                },
+                "topay_url": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PaymentIntentDetail": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "bill_ref_no": {
+                    "type": "string"
+                },
+                "callback_url": {
+                    "type": "string"
+                },
+                "company": {
+                    "$ref": "#/definitions/dto.Company"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "currency": {
+                    "$ref": "#/definitions/constant.Currency"
+                },
+                "customer": {
+                    "$ref": "#/definitions/dto.Customer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "expire_at": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "id": {
+                    "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "return_url": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/constant.Status"
+                },
+                "topay_url": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SignInResponse": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "description": "Access token for the user.",
+                    "type": "string",
+                    "example": "access-token"
+                },
+                "refresh": {
+                    "description": "Refresh token for the user.",
+                    "type": "string",
+                    "example": "refresh-token"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        },
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

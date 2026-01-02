@@ -1,0 +1,545 @@
+definitions:
+  constant.Currency:
+    enum:
+    - ETB
+    - EUR
+    - USD
+    - GBP
+    type: string
+    x-enum-varnames:
+    - CurrencyETB
+    - CurrencyEUR
+    - CurrencyUSD
+    - CurrencyGBP
+  constant.Status:
+    enum:
+    - ACTIVE
+    - INACTIVE
+    - PENDING
+    - DELETED
+    - "YES"
+    - "NO"
+    type: string
+    x-enum-varnames:
+    - Active
+    - Inactive
+    - Pending
+    - Deleted
+    - "Yes"
+    - "No"
+  doc.ErrorResponse:
+    properties:
+      error:
+        description: Error contains the error detail if the request was not successful.
+        properties:
+          code:
+            type: integer
+          description:
+            description: Description is the error description.
+            type: string
+          field_error:
+            description: FieldError is the error detail for each field, if available
+              that is.
+            items:
+              $ref: '#/definitions/doc.FieldError'
+            type: array
+          message:
+            description: Message is the error message.
+            type: string
+          stack_trace:
+            description: |-
+              StackTrace is the stack trace of the error.
+              It is only returned for debugging
+            type: string
+        type: object
+      success:
+        default: false
+        description: Success is only true if the request was successful.
+        type: boolean
+    type: object
+  doc.FieldError:
+    properties:
+      description:
+        description: Description is the error description for this field.
+        type: string
+      name:
+        description: Name is the name of the field that caused the error.
+        type: string
+    type: object
+  doc.SuccessResponse:
+    properties:
+      count:
+        description: Total number of items
+        type: integer
+      data:
+        description: Data contains the actual data of the response.
+      next:
+        description: URL for the next page, null if no next page
+        type: integer
+      previous:
+        description: URL for the previous page, null if no previous page
+        type: integer
+      success:
+        default: false
+        description: Success is only true if the request was successful.
+        type: boolean
+    type: object
+  dto.Company:
+    properties:
+      address_city:
+        type: string
+      address_country:
+        type: string
+      address_postal_code:
+        type: string
+      address_state:
+        type: string
+      address_street:
+        type: string
+      callback_url:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      primary_phone:
+        type: string
+      registration_number:
+        type: string
+      return_url:
+        type: string
+      secondary_phone:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      website:
+        type: string
+    type: object
+  dto.CompanyCredentialResponse:
+    properties:
+      scret_token:
+        type: string
+    type: object
+  dto.CreateCompany:
+    properties:
+      address_city:
+        example: Addis Ababa
+        type: string
+      address_country:
+        example: Ethiopia
+        type: string
+      address_postal_code:
+        example: "1000"
+        type: string
+      address_state:
+        example: Addis Ababa
+        type: string
+      address_street:
+        example: Bole Road
+        type: string
+      admin_email:
+        example: admin@acmetech.com
+        type: string
+      admin_name:
+        example: John Doe
+        type: string
+      admin_phone:
+        example: "+251933456789"
+        type: string
+      callback_url:
+        example: https://www.acmetech.com/payment/callback
+        type: string
+      confirm_password:
+        example: StrongPass@123
+        type: string
+      email:
+        example: info@acmetech.com
+        type: string
+      name:
+        example: Acme Technologies Ltd
+        type: string
+      password:
+        example: StrongPass@123
+        type: string
+      primary_phone:
+        example: "+251911234567"
+        type: string
+      registration_number:
+        example: REG-123456
+        type: string
+      return_url:
+        example: https://www.acmetech.com/payment/return
+        type: string
+      secondary_phone:
+        example: "+251922345678"
+        type: string
+      website:
+        example: https://www.acmetech.com
+        type: string
+    type: object
+  dto.Customer:
+    properties:
+      company_id:
+        example: 550e8400-e29b-41d4-a716-446655440002
+        type: string
+      created_at:
+        example: "2023-09-11T14:30:00Z"
+        type: string
+      email:
+        example: john.doe@gmail.com
+        type: string
+      full_name:
+        example: John Doe
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      phone_number:
+        example: "+1234567890"
+        type: string
+      updated_at:
+        example: "2023-09-11T14:45:00Z"
+        type: string
+    type: object
+  dto.InitPaymentIntent:
+    properties:
+      amount:
+        type: number
+      callback_url:
+        type: string
+      currency:
+        type: string
+      customer:
+        $ref: '#/definitions/dto.PaymentCustomer'
+      description:
+        type: string
+      extra:
+        additionalProperties: {}
+        type: object
+      return_url:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      password:
+        example: StrongPass@123
+        type: string
+      phone:
+        example: "+251933456789"
+        type: string
+    type: object
+  dto.PaymentCustomer:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  dto.PaymentIntent:
+    properties:
+      amount:
+        type: number
+      bill_ref_no:
+        type: string
+      callback_url:
+        type: string
+      company_id:
+        type: string
+      created_at:
+        type: string
+      currency:
+        $ref: '#/definitions/constant.Currency'
+      customer_id:
+        type: string
+      description:
+        type: string
+      expire_at:
+        type: string
+      extra:
+        additionalProperties: {}
+        type: object
+      id:
+        type: string
+      payment_type:
+        type: string
+      return_url:
+        type: string
+      status:
+        $ref: '#/definitions/constant.Status'
+      topay_url:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.PaymentIntentDetail:
+    properties:
+      amount:
+        type: number
+      bill_ref_no:
+        type: string
+      callback_url:
+        type: string
+      company:
+        $ref: '#/definitions/dto.Company'
+      created_at:
+        type: string
+      currency:
+        $ref: '#/definitions/constant.Currency'
+      customer:
+        $ref: '#/definitions/dto.Customer'
+      description:
+        type: string
+      expire_at:
+        type: string
+      extra:
+        additionalProperties: {}
+        type: object
+      id:
+        type: string
+      payment_type:
+        type: string
+      return_url:
+        type: string
+      status:
+        $ref: '#/definitions/constant.Status'
+      topay_url:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.SignInResponse:
+    properties:
+      access:
+        description: Access token for the user.
+        example: access-token
+        type: string
+      refresh:
+        description: Refresh token for the user.
+        example: refresh-token
+        type: string
+    type: object
+info:
+  contact:
+    email: info@vertex.com
+    name: vertex Support Email
+    url: sample@gmail.com
+  description: This is the activity api.
+  title: activity API
+  version: "1.0"
+paths:
+  /generate-secret-token:
+    post:
+      consumes:
+      - application/json
+      description: Get a company secret token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/doc.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CompanyCredentialResponse'
+                meta_data: {}
+              type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "401":
+          description: Unauthorized request
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get secret token
+      tags:
+      - company
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows a company to log in to the application.
+      parameters:
+      - description: Login credentials of the company
+        in: body
+        name: company_login_request_body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/doc.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SignInResponse'
+                meta_data: {}
+              type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "401":
+          description: Unauthorized request
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+      summary: Authenticate a company
+      tags:
+      - company
+  /payment-intents:
+    post:
+      consumes:
+      - application/json
+      description: Initiate onetme paymentIntent
+      parameters:
+      - description: payment-intent details
+        in: body
+        name: create_payment_intent_request_body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.InitPaymentIntent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/doc.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PaymentIntent'
+                meta_data: {}
+              type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "401":
+          description: Unauthorized request
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: InitPaymentIntent
+      tags:
+      - payments
+  /payment-intents/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get payment details by id
+      parameters:
+      - description: payment intent id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/doc.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PaymentIntentDetail'
+                meta_data: {}
+              type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "401":
+          description: Unauthorized request
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get PaymentIntent By ID
+      tags:
+      - payments
+  /signup-company-owner:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint registers a new company in the Activity Rewards application.
+      parameters:
+      - description: Company details for registration
+        in: body
+        name: create_company_request_body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCompany'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/doc.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Company'
+                meta_data: {}
+              type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "401":
+          description: Unauthorized request
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/doc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new company
+      tags:
+      - company
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
