@@ -52,13 +52,13 @@ type PaymentIntentDetail struct {
 }
 
 type InitPaymentIntent struct {
-	Amount      decimal.Decimal `json:"amount,omitempty"`
-	Currency    string          `json:"currency,omitempty"`
-	CallBackURL string          `json:"callback_url,omitempty"`
-	ReturnURL   string          `json:"return_url,omitempty"`
-	Description string          `json:"description,omitempty"`
-	Customer    PaymentCustomer `json:"customer,omitempty"`
-	Extra       map[string]any  `json:"extra,omitempty"`
+	Amount      decimal.Decimal        `json:"amount,omitempty" example:"1500.75"`
+	Currency    string                 `json:"currency,omitempty" example:"ETB"`
+	CallBackURL string                 `json:"callback_url,omitempty" example:"https://merchant.example.com/payment/callback"`
+	ReturnURL   string                 `json:"return_url,omitempty" example:"https://merchant.example.com/payment/return"`
+	Description string                 `json:"description,omitempty" example:"Parking subscription payment"`
+	Customer    PaymentCustomer        `json:"customer,omitempty"`
+	Extra       map[string]interface{} `json:"extra,omitempty"`
 }
 
 func (c InitPaymentIntent) Validate() error {
@@ -120,9 +120,9 @@ func ValidatePhone(phone any) error {
 }
 
 type PaymentCustomer struct {
-	FullName    string `json:"full_name,omitempty"`
-	PhoneNumber string `json:"phone_number,omitempty"`
-	Email       string `json:"email,omitempty"`
+	FullName    string `json:"full_name,omitempty" example:"Abel Tesfaye"`
+	PhoneNumber string `json:"phone_number,omitempty" example:"+251911234567"`
+	Email       string `json:"email,omitempty" example:"abel.tesfaye@example.com"`
 }
 
 type CreatePaymentIntent struct {

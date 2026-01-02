@@ -214,19 +214,24 @@ definitions:
   dto.InitPaymentIntent:
     properties:
       amount:
+        example: 1500.75
         type: number
       callback_url:
+        example: https://merchant.example.com/payment/callback
         type: string
       currency:
+        example: ETB
         type: string
       customer:
         $ref: '#/definitions/dto.PaymentCustomer'
       description:
+        example: Parking subscription payment
         type: string
       extra:
-        additionalProperties: {}
+        additionalProperties: true
         type: object
       return_url:
+        example: https://merchant.example.com/payment/return
         type: string
     type: object
   dto.LoginRequest:
@@ -241,10 +246,13 @@ definitions:
   dto.PaymentCustomer:
     properties:
       email:
+        example: abel.tesfaye@example.com
         type: string
       full_name:
+        example: Abel Tesfaye
         type: string
       phone_number:
+        example: "+251911234567"
         type: string
     type: object
   dto.PaymentIntent:

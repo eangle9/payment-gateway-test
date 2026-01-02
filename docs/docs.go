@@ -645,26 +645,31 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 1500.75
                 },
                 "callback_url": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://merchant.example.com/payment/callback"
                 },
                 "currency": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ETB"
                 },
                 "customer": {
                     "$ref": "#/definitions/dto.PaymentCustomer"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Parking subscription payment"
                 },
                 "extra": {
                     "type": "object",
-                    "additionalProperties": {}
+                    "additionalProperties": true
                 },
                 "return_url": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://merchant.example.com/payment/return"
                 }
             }
         },
@@ -685,13 +690,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "abel.tesfaye@example.com"
                 },
                 "full_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Abel Tesfaye"
                 },
                 "phone_number": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "+251911234567"
                 }
             }
         },

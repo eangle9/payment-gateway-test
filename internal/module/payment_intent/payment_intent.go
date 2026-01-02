@@ -83,6 +83,20 @@ func (p *paymentIntent) InitPaymentIntent(ctx context.Context,
 		return nil, err
 	}
 
+	// Parse phone number
+	if param.Customer.PhoneNumber != "" {
+		phone, err := utils.ParsePhoneNumber(param.Customer.PhoneNumber)
+		if err != nil {
+			err = errors.ErrInvalidUserInput.Wrap(err, "failed to parse phone number")
+			p.log.Error(ctx, "failed to parse phone number",
+				zap.Error(err),
+				zap.String("phone", param.Customer.PhoneNumber),
+			)
+			return nil, err
+		}
+		param.Customer.PhoneNumber = *phone
+	}
+
 	paymentIntent, err := p.paymentIntentStorage.CreatePaymentIntent(ctx,
 		dto.CreatePaymentIntent{
 			CompanyID:   company.ID,

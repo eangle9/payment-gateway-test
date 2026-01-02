@@ -9,6 +9,7 @@ import (
 	"pg/internal/storage"
 	"pg/platform/hcrypto"
 	"pg/platform/hlog"
+	"pg/platform/utils"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -51,6 +52,17 @@ func (c *company) RegisterCompany(ctx context.Context,
 		c.log.Error(ctx, "unable to generate password hash", zap.Error(err))
 		return nil, err
 	}
+	// Parse phone number
+	phone, err := utils.ParsePhoneNumber(param.AdminPhone)
+	if err != nil {
+		err = errors.ErrInvalidUserInput.Wrap(err, "failed to parse phone number")
+		c.log.Error(ctx, "failed to parse phone number",
+			zap.Error(err),
+			zap.String("phone", param.AdminPhone),
+		)
+		return nil, err
+	}
+	param.AdminPhone = *phone
 	if _, err = c.companyStorage.CreateUser(ctx, dto.CreateUser{
 		CompanyID: company.ID,
 		FirstName: param.AdminName,
